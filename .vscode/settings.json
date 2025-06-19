@@ -1,0 +1,13 @@
+{
+  "sqltools.connections": [
+    {
+      "previewLimit": 50,
+      "server": "localhost",
+      "port": 4000,
+      "driver": "PostgreSQL",
+      "name": "instagram6",
+      "database": "instagram2",
+      "username": "postgres"
+    }
+  ]
+}

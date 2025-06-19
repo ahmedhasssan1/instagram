@@ -1,0 +1,75 @@
+# ------------------------------------------------------
+# THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
+# ------------------------------------------------------
+
+type Users {
+  id: Int!
+  created_at: DateTime!
+  updated_at: DateTime!
+  username: String!
+  bio: String!
+  number: String!
+  email: String!
+  password: String!
+  status: String!
+}
+
+"""
+A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date-time format.
+"""
+scalar DateTime
+
+type Posts {
+  id: Int!
+  created_at: DateTime!
+  updated_at: DateTime!
+  caption: String!
+  iat: Float!
+  lng: Float!
+  likescount: Int!
+  commentCount: Int!
+}
+
+type Comments {
+  id: Int!
+  created_at: DateTime!
+  updated_at: DateTime!
+  content: String!
+  user: Users!
+  post: Posts!
+  likesCount: Float!
+}
+
+type Query {
+  hello: String!
+  findUser(userId: Int!): Users!
+  findPost(findPost: Float!): Posts!
+}
+
+type Mutation {
+  createUser(createUser: CreateUserDto!): Users!
+  CreatePostDto(createPost: CreatePostDto!): Posts!
+  createComment(createCommentinput: CreateCommentInput!): Comments!
+}
+
+input CreateUserDto {
+  username: String!
+  bio: String!
+  number: String!
+  email: String!
+  password: String!
+  status: String!
+}
+
+input CreatePostDto {
+  user: Int!
+  caption: String!
+  iat: Float!
+  lng: Float!
+}
+
+input CreateCommentInput {
+  content: String!
+  userId: Int!
+  postId: Int!
+}
