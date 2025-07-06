@@ -50,6 +50,7 @@ type Mutation {
   createUser(createUser: CreateUserDto!): Users!
   CreatePostDto(createPost: CreatePostDto!): Posts!
   createComment(createCommentinput: CreateCommentInput!): Comments!
+  login(login: LoginDto!): String!
 }
 
 input CreateUserDto {
@@ -72,4 +73,9 @@ input CreateCommentInput {
   content: String!
   userId: Int!
   postId: Int!
+}
+
+input LoginDto {
+  email: String!
+  password: String!
 }

@@ -16,8 +16,8 @@ export class UsersService {
             ...rest,
             password:hashPassword
         })
+        console.log(hashPassword);
         return this.userRepo.save(user);
-
     }
     async findOneUser(id:number):Promise<Users>{
         const findUser=await this.userRepo.findOneBy({id});
@@ -25,5 +25,12 @@ export class UsersService {
             throw new NotFoundException("this user not exist");
         }
         return findUser;
+    }
+    async findUserByEmail(email:string){
+        const user=await this.userRepo.findOne({where:{email}});
+        if(!user){
+            throw new NotFoundException('this user not exist');
+        }
+        return user
     }
 }

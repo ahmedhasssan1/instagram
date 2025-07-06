@@ -16,7 +16,7 @@ import { FollowersModule } from './followers/followers.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigModule } from '@nestjs/config';
 import { FirebaseModule } from './firebase/firebase.module';
-import { MessageModule } from './message/message.module';
+import { AuthModule } from './auth/auth.module';
 
 @Module({
   imports:[
@@ -48,7 +48,7 @@ import { MessageModule } from './message/message.module';
     HashtagesPostsModule,
     FollowersModule,
     FirebaseModule,
-    MessageModule,
+    AuthModule,
   ],
   controllers: [AppController],
   providers: [AppService],

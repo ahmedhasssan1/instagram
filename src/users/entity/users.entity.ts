@@ -1,5 +1,4 @@
 import { Field, Int, ObjectType } from "@nestjs/graphql";
-import { IsEmail, IsInt, IsString } from "class-validator";
 import { CreateDateColumn, Entity, PrimaryGeneratedColumn, Column } from "typeorm";
 
 @Entity()
@@ -41,4 +40,5 @@ export class Users{
     @Field(()=>String)
     @Column() 
     status:string
+    
 }
