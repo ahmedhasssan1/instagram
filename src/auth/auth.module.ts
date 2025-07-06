@@ -4,6 +4,9 @@ import { AuthResolver } from './auth.resolver';
 import { UsersModule } from 'src/users/users.module';
 import { JwtModule } from '@nestjs/jwt';
 import { ConfigModule, ConfigService } from '@nestjs/config';
+import { RedisModule } from 'src/redis/redis.module';
+import { EmailModule } from 'src/email/email.module';
+import { otpService } from './otp.service';
 
 @Module({
   imports:[UsersModule,JwtModule.registerAsync({
@@ -13,7 +16,10 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
       secret:configService.get<string>('jwt_sercet'),
       signOptions:{expiresIn:'2h'}
     })
-  })],
-  providers: [AuthResolver, AuthService],
+  }),
+  EmailModule,
+  RedisModule
+],
+  providers: [AuthResolver, AuthService,otpService],
 })
 export class AuthModule {}

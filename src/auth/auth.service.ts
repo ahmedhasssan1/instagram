@@ -1,9 +1,12 @@
-import { Injectable, NotFoundException, UnauthorizedException } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable, NotFoundException, UnauthorizedException } from '@nestjs/common';
 import { UsersService } from 'src/users/users.service';
 import { LoginDto } from './dto/login.dto';
 import * as bcrypt from 'bcrypt';
 import { JwtService } from '@nestjs/jwt';
-import { otpDto } from './dto/otp.dto';
+import * as crypto from 'crypto'
+import {compare, hash} from "bcrypt";
+
+import { RedisService } from 'src/redis/redis.service';
 
 
 const blacklist = new Set();
@@ -11,7 +14,8 @@ const blacklist = new Set();
 @Injectable()
 export class AuthService {
     constructor(private userService:UsersService,
-        private jwtService:JwtService
+        private jwtService:JwtService,
+        private redicClient:RedisService
     ){}
     
     async login(login:LoginDto){
@@ -40,9 +44,5 @@ export class AuthService {
         user.status="offline";
         blacklist.add(user.email);
     }
-
-    async otpRequest(otp:otpDto){
-        
-
-    }
+   
 }

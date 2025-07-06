@@ -51,6 +51,9 @@ type Mutation {
   CreatePostDto(createPost: CreatePostDto!): Posts!
   createComment(createCommentinput: CreateCommentInput!): Comments!
   login(login: LoginDto!): String!
+  sendOtp(email: String!, name: String!): String!
+  sendemail(seendEmailDto: String!): String!
+  setREdisValue(keyAndValue: setRedisDto!): String!
 }
 
 input CreateUserDto {
@@ -78,4 +81,9 @@ input CreateCommentInput {
 input LoginDto {
   email: String!
   password: String!
+}
+
+input setRedisDto {
+  key: String!
+  value: String!
 }
