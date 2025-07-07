@@ -52,6 +52,7 @@ type Mutation {
   createComment(createCommentinput: CreateCommentInput!): Comments!
   login(login: LoginDto!): String!
   sendOtp(email: String!, name: String!): String!
+  verfication(otp: resetPasswordDto!): String!
   sendemail(seendEmailDto: String!): String!
   setREdisValue(keyAndValue: setRedisDto!): String!
 }
@@ -81,6 +82,12 @@ input CreateCommentInput {
 input LoginDto {
   email: String!
   password: String!
+}
+
+input resetPasswordDto {
+  email: String!
+  otp: String!
+  newPassword: String!
 }
 
 input setRedisDto {

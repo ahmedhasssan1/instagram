@@ -9,6 +9,7 @@ import * as crypto from 'crypto';
 import { compare, hash } from 'bcrypt';
 import { RedisService } from 'src/redis/redis.service';
 import { EmailService } from 'src/email/email.service';
+import { resetPasswordDto } from './dto/otp.dto';
 
 @Injectable()
 export class otpService {
@@ -82,13 +83,20 @@ export class otpService {
     return otp; 
   }
 
-  async verifyOtp(email: string, otp: string): Promise<void> {
+  async verifyOtp(email: string, otp: string): Promise<string> {
     const otpKey = `otp:${email}`;
     const retryKey = `retryCount:otp:${email}`;
 
     const storedOtp = await this.redisClient.getValue(otpKey);
+    
     let retryCount = Number(await this.redisClient.getValue(retryKey)) || 0;
-
+    const useremail=await this.userService.findUserByEmail(email);
+      if (!useremail ) {
+      throw new HttpException('email not found', HttpStatus.FORBIDDEN);
+    }
+    if (!storedOtp ) {
+      throw new HttpException('OTP expired  or not found', HttpStatus.FORBIDDEN);
+    }
     if (retryCount >= 5) {
       throw new HttpException(
         'Maximum retry attempts reached',
@@ -112,5 +120,10 @@ export class otpService {
     // OTP is correct — optionally delete OTP and retry count
     await this.redisClient.setValue(otpKey, "", 1); // delete soon
     await this.redisClient.setValue(retryKey, "0", 1);
+    
+    return"verfied"
+  }
+  async newPass(userPass:resetPasswordDto){
+    await this.userService.newPassword(userPass)
   }
 }

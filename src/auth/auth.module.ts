@@ -21,5 +21,6 @@ import { otpService } from './otp.service';
   RedisModule
 ],
   providers: [AuthResolver, AuthService,otpService],
+  // exports:[otpService]
 })
 export class AuthModule {}
