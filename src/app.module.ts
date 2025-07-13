@@ -30,8 +30,8 @@ import { RedisModule } from './redis/redis.module';
     }),
     TypeOrmModule.forRoot({
        type: 'postgres',
-      host: 'localhost',
-      port: 4000, 
+      host: 'postgres',
+      port: 5432, 
       username: 'postgres',
       password:process.env.data_base_pass,
       database: process.env.dataBaseName,
