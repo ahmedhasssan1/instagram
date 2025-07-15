@@ -1,8 +1,4 @@
-import {
-  HttpException,
-  HttpStatus,
-  Injectable,
-} from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { UsersService } from 'src/users/users.service';
 import { JwtService } from '@nestjs/jwt';
 import * as crypto from 'crypto';
@@ -17,7 +13,7 @@ export class otpService {
     private userService: UsersService,
     private jwtService: JwtService,
     private redisClient: RedisService,
-    private emailService:EmailService
+    private emailService: EmailService,
   ) {}
 
   private readonly OTP_EXPIRATION_TIME = 5 * 60; // 5 minutes
@@ -33,7 +29,7 @@ export class otpService {
     const retryKey = `retryCount:otp:${email}`;
 
     await this.redisClient.setValue(otpKey, otp, this.OTP_EXPIRATION_TIME);
-    await this.redisClient.setValue(retryKey, "0", this.OTP_EXPIRATION_TIME);
+    await this.redisClient.setValue(retryKey, '0', this.OTP_EXPIRATION_TIME);
   }
 
   async applyCooldown(email: string, cooldownTime: number): Promise<void> {
@@ -43,7 +39,7 @@ export class otpService {
     await this.redisClient.setValue(
       cooldownKey,
       (currentTime + cooldownTime).toString(),
-      cooldownTime
+      cooldownTime,
     );
   }
 
@@ -63,7 +59,7 @@ export class otpService {
 
       throw new HttpException(
         `OTP is on cooldown. Please wait ${minutes} minutes and ${seconds} seconds.`,
-        HttpStatus.TOO_MANY_REQUESTS
+        HttpStatus.TOO_MANY_REQUESTS,
       );
     }
   }
@@ -79,8 +75,8 @@ export class otpService {
 
     // Normally you would send the OTP via email/SMS here
     console.log(`Generated OTP for ${email}: ${otp}`);
-    await this.emailService.sendEmail(email,name,otp);
-    return otp; 
+    await this.emailService.sendEmail(email, name, otp);
+    return otp;
   }
 
   async verifyOtp(email: string, otp: string): Promise<string> {
@@ -88,19 +84,22 @@ export class otpService {
     const retryKey = `retryCount:otp:${email}`;
 
     const storedOtp = await this.redisClient.getValue(otpKey);
-    
+
     let retryCount = Number(await this.redisClient.getValue(retryKey)) || 0;
-    const useremail=await this.userService.findUserByEmail(email);
-      if (!useremail ) {
+    const useremail = await this.userService.findUserByEmail(email);
+    if (!useremail) {
       throw new HttpException('email not found', HttpStatus.FORBIDDEN);
     }
-    if (!storedOtp ) {
-      throw new HttpException('OTP expired  or not found', HttpStatus.FORBIDDEN);
+    if (!storedOtp) {
+      throw new HttpException(
+        'OTP expired  or not found',
+        HttpStatus.FORBIDDEN,
+      );
     }
     if (retryCount >= 5) {
       throw new HttpException(
         'Maximum retry attempts reached',
-        HttpStatus.FORBIDDEN
+        HttpStatus.FORBIDDEN,
       );
     }
 
@@ -118,12 +117,12 @@ export class otpService {
     }
 
     // OTP is correct — optionally delete OTP and retry count
-    await this.redisClient.setValue(otpKey, "", 1); // delete soon
-    await this.redisClient.setValue(retryKey, "0", 1);
-    
-    return"verfied"
+    await this.redisClient.setValue(otpKey, '', 1); // delete soon
+    await this.redisClient.setValue(retryKey, '0', 1);
+
+    return 'verfied';
   }
-  async newPass(userPass:resetPasswordDto){
-    await this.userService.newPassword(userPass)
+  async newPass(userPass: resetPasswordDto) {
+    await this.userService.newPassword(userPass);
   }
 }

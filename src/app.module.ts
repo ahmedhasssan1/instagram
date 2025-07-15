@@ -23,23 +23,13 @@ import { BullModule } from '@nestjs/bullmq';
 
 @Module({
   imports:[
-    // BullModule.forRoot({
-    //   connection:{
-    //     host: '192.168.116.128',
-    //     port: Number(process.env.REDIS_PORT)||6379 ,
-    //   },
-    //   defaultJobOptions:{attempts:3,removeOnComplete: true}
-    // }),
-    // BullModule.registerQueue({name:'test'},{name:'email'}),
     GraphQLModule.forRoot<ApolloDriverConfig>({
       driver: ApolloDriver,
       autoSchemaFile: join(process.cwd(),'src/schema.gql'),
-      context: ({ req,res }) => ({ req,res}),
-      // playground:true
-   
+      context: ({ req,res }) => ({ req,res}),   
       playground: {
         settings: {
-        "request.credentials": "include", // Otherwise cookies won't be sent
+        "request.credentials": "include", 
         }
       },
 
