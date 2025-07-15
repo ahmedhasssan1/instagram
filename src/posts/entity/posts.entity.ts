@@ -17,7 +17,7 @@ export class Posts {
   @Field(() => Date)
   updated_at: Date;
 
-
+  @Field(()=>Users)
   @ManyToOne(() => Users, (user) =>user.id)
   @JoinColumn({ name: 'user_id' })
   user: Users;

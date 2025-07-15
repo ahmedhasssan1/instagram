@@ -1,1 +1,1 @@
-SELECT * from users
+delete  from posts 

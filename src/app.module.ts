@@ -18,26 +18,45 @@ import { ConfigModule } from '@nestjs/config';
 import { FirebaseModule } from './firebase/firebase.module';
 import { AuthModule } from './auth/auth.module';
 import { RedisModule } from './redis/redis.module';
+import { METHODS } from 'http';
+import { BullModule } from '@nestjs/bullmq';
 
 @Module({
   imports:[
+    // BullModule.forRoot({
+    //   connection:{
+    //     host: '192.168.116.128',
+    //     port: Number(process.env.REDIS_PORT)||6379 ,
+    //   },
+    //   defaultJobOptions:{attempts:3,removeOnComplete: true}
+    // }),
+    // BullModule.registerQueue({name:'test'},{name:'email'}),
     GraphQLModule.forRoot<ApolloDriverConfig>({
       driver: ApolloDriver,
       autoSchemaFile: join(process.cwd(),'src/schema.gql'),
+      context: ({ req,res }) => ({ req,res}),
+      // playground:true
+   
+      playground: {
+        settings: {
+        "request.credentials": "include", // Otherwise cookies won't be sent
+        }
+      },
+
     }),
     ConfigModule.forRoot({
       isGlobal:true
     }),
     TypeOrmModule.forRoot({
-       type: 'postgres',
-      host: 'postgres',
-      port: 5432, 
+      type: 'postgres',
+      host: 'localhost',
+      port: 4000, 
       username: 'postgres',
       password:process.env.data_base_pass,
       database: process.env.dataBaseName,
       // entities: [__dirname + '/../**/*.entity{.ts,.js}'], 
       synchronize: true, 
-      autoLoadEntities:true
+      autoLoadEntities:true,
     }),
     UsersModule,
     PostsModule,
@@ -51,6 +70,7 @@ import { RedisModule } from './redis/redis.module';
     FirebaseModule,
     AuthModule,
     RedisModule,
+    
   ],
   controllers: [AppController],
   providers: [AppService],

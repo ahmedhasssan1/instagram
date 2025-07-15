@@ -33,7 +33,7 @@ export class Comments {
   @Field(() => Users)
   user: Users;
 
-  @ManyToOne(() => Posts,(post)=>post.id)
+  @ManyToOne(() => Posts,(post)=>post.id,{onDelete:'CASCADE'})
   @Field(() => Posts)
   post: Posts
 

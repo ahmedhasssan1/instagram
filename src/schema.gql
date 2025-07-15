@@ -23,6 +23,7 @@ type Posts {
   id: Int!
   created_at: DateTime!
   updated_at: DateTime!
+  user: Users!
   caption: String!
   iat: Float!
   lng: Float!
@@ -44,17 +45,24 @@ type Query {
   hello: String!
   findUser(userId: Int!): Users!
   findPost(findPost: Float!): Posts!
+  findAllPost(pagination: Pageination!): [Posts!]!
+}
+
+input Pageination {
+  page: Float!
+  limit: Float!
 }
 
 type Mutation {
   createUser(createUser: CreateUserDto!): Users!
-  CreatePostDto(createPost: CreatePostDto!): Posts!
+  createPost(createPost: CreatePostDto!): Posts!
+  setREdisValue(keyAndValue: setRedisDto!): String!
   createComment(createCommentinput: CreateCommentInput!): Comments!
   login(login: LoginDto!): String!
   sendOtp(email: String!, name: String!): String!
   verfication(otp: resetPasswordDto!): String!
+  logout: String!
   sendemail(seendEmailDto: String!): String!
-  setREdisValue(keyAndValue: setRedisDto!): String!
 }
 
 input CreateUserDto {
@@ -68,9 +76,14 @@ input CreateUserDto {
 
 input CreatePostDto {
   user: Int!
-  caption: String!
+  caption: String
   iat: Float!
   lng: Float!
+}
+
+input setRedisDto {
+  key: String!
+  value: String!
 }
 
 input CreateCommentInput {
@@ -88,9 +101,4 @@ input resetPasswordDto {
   email: String!
   otp: String!
   newPassword: String!
-}
-
-input setRedisDto {
-  key: String!
-  value: String!
 }

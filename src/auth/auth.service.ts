@@ -7,6 +7,8 @@ import * as crypto from 'crypto'
 import {compare, hash} from "bcrypt";
 
 import { RedisService } from 'src/redis/redis.service';
+import { Request } from 'express';
+import { Response } from 'express';
 
 
 const blacklist = new Set();
@@ -18,7 +20,7 @@ export class AuthService {
         private redicClient:RedisService
     ){}
     
-    async login(login:LoginDto){
+    async login(login:LoginDto,res:Response){
         
         const userExist=await this.userService.findUserByEmail(login.email)
         if(!userExist){
@@ -34,15 +36,16 @@ export class AuthService {
             email:userExist.email,
         }
         const accessToken=await this.jwtService.signAsync(payload);
+        res.cookie('access_token', accessToken, {
+        httpOnly: true,
+        secure: false, // Set to false if running locally without HTTPS
+        path: '/',
+        sameSite: 'strict',
+        maxAge: 1000 * 60 * 60 * 24,
+         });
+         
         return accessToken
     }
-    async logout(logout:LoginDto){
-        const user=await this.userService.findUserByEmail(logout.email);
-        if(!user){
-            throw new UnauthorizedException("this user npt exist");
-        }
-        user.status="offline";
-        blacklist.add(user.email);
-    }
+  
    
 }

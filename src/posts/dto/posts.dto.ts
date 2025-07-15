@@ -1,5 +1,6 @@
-import { InputType, Field, Float, Int } from '@nestjs/graphql';
+import { InputType, Field, Float, Int, ObjectType } from '@nestjs/graphql';
 import { IsString, IsNumber, MaxLength, IsInt } from 'class-validator';
+import { Posts } from '../entity/posts.entity';
 
 @InputType()
 export class CreatePostDto {
@@ -7,7 +8,7 @@ export class CreatePostDto {
   @IsInt()
   user: number;
 
-  @Field()
+  @Field({nullable:true})
   @IsString()
   @MaxLength(250)
   caption: string;
@@ -19,4 +20,13 @@ export class CreatePostDto {
   @Field(() => Float)
   @IsNumber()
   lng: number;
+}
+
+@ObjectType()
+export class PaginatedPosts {
+  @Field(() => [Posts])
+  items: Posts[];
+
+  @Field(() => Int)
+  totalCount: number;
 }
