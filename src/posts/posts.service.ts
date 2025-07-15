@@ -11,6 +11,7 @@ import { plainToInstance } from 'class-transformer';
 import { InjectQueue } from '@nestjs/bullmq';
 import { Queue } from 'bullmq';
 
+
 @Injectable()
 export class PostsService {
     constructor(@InjectRepository(Posts) private postRepo:Repository<Posts>,
@@ -51,8 +52,11 @@ export class PostsService {
       if (cached) {
         console.log('cache hit');
         const parsed = JSON.parse(cached);
-        // console.log('debugging ',parsed);
-        return plainToInstance(Posts, parsed);
+        const items=plainToInstance(Posts, parsed)
+        
+        console.log('debugging ',items,limit);
+        return{ items,totalCount:limit};
+        
       } else {
         console.log('cache missed');
       }
@@ -68,7 +72,8 @@ export class PostsService {
       }
 
       await this.redisService.setValue(cacheKey, JSON.stringify(allPosts), 60 * 10); // 10 minutes
-      return allPosts;
+      
+      return {allPosts,totalCount:limit};
   }
 
 

@@ -6,6 +6,7 @@ import { RedisService } from 'src/redis/redis.service';
 import { Pageination } from './dto/pagienation.dto';
 import { InjectQueue } from '@nestjs/bullmq';
 import { Queue } from 'bullmq';
+import { NotFoundException } from '@nestjs/common';
 
 @Resolver()
 export class PostsResolver {
@@ -22,8 +23,12 @@ export class PostsResolver {
     async findPost(@Args('findPost') id:number):Promise<Posts>{
       return this.postsService.findPost(id);
     }
-    @Query(()=>[Posts])
-    async findAllPost(@Args('pagination') paginationDto:Pageination){
-      return await this.postsService.findAllPosts(paginationDto)
-    }
+    @Query(()=>PaginatedPosts)
+    async findAllPost(@Args('pagination') paginationDto:Pageination):Promise<PaginatedPosts | any>{
+        const result = await this.postsService.findAllPosts(paginationDto);
+      if (!result) {
+            throw new NotFoundException('No result found');
+      }
+          return result;
+      }
 }

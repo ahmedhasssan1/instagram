@@ -31,6 +31,11 @@ type Posts {
   commentCount: Int!
 }
 
+type PaginatedPosts {
+  items: [Posts!]!
+  totalCount: Int!
+}
+
 type Comments {
   id: Int!
   created_at: DateTime!
@@ -45,7 +50,7 @@ type Query {
   hello: String!
   findUser(userId: Int!): Users!
   findPost(findPost: Float!): Posts!
-  findAllPost(pagination: Pageination!): [Posts!]!
+  findAllPost(pagination: Pageination!): PaginatedPosts!
 }
 
 input Pageination {
