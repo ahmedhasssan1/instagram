@@ -41,7 +41,7 @@ type Comments {
   created_at: DateTime!
   updated_at: DateTime!
   content: String!
-  user: Users!
+  user_id: Int!
   post: Posts!
   likesCount: Float!
 }
@@ -51,6 +51,7 @@ type Query {
   findUser(userId: Int!): Users!
   findPost(findPost: Float!): Posts!
   findAllPost(pagination: Pageination!): PaginatedPosts!
+  findComment(commentId: Float!): Comments!
 }
 
 input Pageination {
@@ -63,6 +64,9 @@ type Mutation {
   createPost(createPost: CreatePostDto!): Posts!
   setREdisValue(keyAndValue: setRedisDto!): String!
   createComment(createCommentinput: CreateCommentInput!): Comments!
+  deleteComment(deleteCommentDto: DeleteCommentDto!): String!
+  createLike(likeDto: LikeDto!): String!
+  dislike(dislike: LikeDto!): String!
   login(login: LoginDto!): String!
   sendOtp(email: String!, name: String!): String!
   verfication(otp: resetPasswordDto!): String!
@@ -95,6 +99,19 @@ input CreateCommentInput {
   content: String!
   userId: Int!
   postId: Int!
+}
+
+input DeleteCommentDto {
+  post_id: Int!
+  comment_id: Int!
+  user_id: Int!
+}
+
+input LikeDto {
+  target: String!
+  user_id: Int!
+  post_id: Int
+  comment_id: Int
 }
 
 input LoginDto {

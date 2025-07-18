@@ -14,8 +14,8 @@ async function bootstrap() {
   methods: ['GET', 'POST', 'OPTIONS'],
   credentials: true,
 });
+  const port=process.env.PORT ?? 3000
 
-
-  await app.listen(process.env.PORT ?? 3000,()=>console.log("running on port 3000"));
+  await app.listen(port,()=>console.log(`running on port ${port}`));
 }
 bootstrap();

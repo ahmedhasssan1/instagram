@@ -4,12 +4,9 @@ import { Posts } from './entity/posts.entity';
 import { IsNull, Not, Repository } from 'typeorm';
 import { CreatePostDto } from './dto/posts.dto';
 import { UsersService } from 'src/users/users.service';
-import { throwError } from 'rxjs';
 import { Pageination } from './dto/pagienation.dto';
 import { RedisService } from 'src/redis/redis.service';
 import { plainToInstance } from 'class-transformer';
-import { InjectQueue } from '@nestjs/bullmq';
-import { Queue } from 'bullmq';
 
 @Injectable()
 export class PostsService {
@@ -32,7 +29,7 @@ export class PostsService {
   }
 
   async findPost(id: number): Promise<Posts> {
-    const findPost = await this.postRepo.findOneBy({ id });
+    const findPost = await this.postRepo.findOne({where:{id},relations:['user']});
     if (!findPost) {
       throw new NotFoundException('there no post with this id ');
     }
@@ -71,5 +68,8 @@ export class PostsService {
     ); // 10 minutes
 
     return { allPosts, totalCount: limit };
+  }
+  async save(post:Posts):Promise<Posts>{
+    return this.postRepo.save(post);
   }
 }

@@ -13,10 +13,8 @@ import * as crypto from 'crypto';
 import { compare, hash } from 'bcrypt';
 
 import { RedisService } from 'src/redis/redis.service';
-import { Request } from 'express';
+  import { Request } from 'express';
 import { Response } from 'express';
-
-const blacklist = new Set();
 
 @Injectable()
 export class AuthService {

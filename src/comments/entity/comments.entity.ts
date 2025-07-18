@@ -6,10 +6,10 @@ import {
   UpdateDateColumn,
   Column,
   ManyToOne,
+  JoinColumn,
 } from 'typeorm';
 import { Users } from 'src/users/entity/users.entity';
 import { Posts } from 'src/posts/entity/posts.entity';
-
 @ObjectType()
 @Entity()
 export class Comments {
@@ -29,16 +29,16 @@ export class Comments {
   @Field(() => String)
   content: string;
 
-  @ManyToOne(() => Users, (user)=>user.id)
-  @Field(() => Users)
-  user: Users;
+  @Column()
+  @Field(() => Int)
+  user_id: number; // ✅ just store the foreign key, not relation
 
-  @ManyToOne(() => Posts,(post)=>post.id,{onDelete:'CASCADE'})
+  @ManyToOne(() => Posts, { onDelete: 'CASCADE' })
+  @JoinColumn()
   @Field(() => Posts)
-  post: Posts
+  post: Posts;
 
-  @Column({default:0})
+  @Column({ default: 0 })
   @Field()
-  likesCount:number
-
+  likesCount: number;
 }

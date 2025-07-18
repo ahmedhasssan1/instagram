@@ -1,1 +1,1 @@
-delete  from posts 
+delete   from Comments 
