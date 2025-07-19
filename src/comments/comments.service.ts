@@ -48,7 +48,7 @@ export class CommentsService {
 
   }
   async deleteComment(deleteComment:DeleteCommentDto):Promise<String>{
-    const findComment=await this.CommentRepo.findOne({where:{id:deleteComment.comment_id}});
+    const findComment=await this.CommentRepo.findOne({where:{id:deleteComment.comment_id},relations:['post']});
     if(!findComment){
       throw new NotFoundException("thi comment not exist")
     }
@@ -60,6 +60,9 @@ export class CommentsService {
     }
 
     if((findComment.user_id==deleteComment.user_id || findPostOwner.user.id==deleteComment.user_id)){
+      if(findComment.post.id==findPostOwner.id){
+        return 'this comment do not belong to this post'
+      }
       await this.CommentRepo.remove(findComment);
         if(findPostOwner.commentCount>0){
           findPostOwner.commentCount--;
