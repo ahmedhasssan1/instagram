@@ -46,12 +46,19 @@ type Comments {
   likesCount: Float!
 }
 
+type Followers {
+  id: Float!
+  leader_id: Float!
+  follower_id: Float!
+}
+
 type Query {
   hello: String!
   findUser(userId: Int!): Users!
   findPost(findPost: Float!): Posts!
   findAllPost(pagination: Pageination!): PaginatedPosts!
   findComment(commentId: Float!): Comments!
+  countFolllowers(countFollowersDto: Float!): Float!
 }
 
 input Pageination {
@@ -67,6 +74,8 @@ type Mutation {
   deleteComment(deleteCommentDto: DeleteCommentDto!): String!
   createLike(likeDto: LikeDto!): String!
   dislike(dislike: LikeDto!): String!
+  follow(followDto: followerDto!): Followers!
+  unFollow(unFollowDto: followerDto!): String!
   login(login: LoginDto!): String!
   sendOtp(email: String!, name: String!): String!
   verfication(otp: resetPasswordDto!): String!
@@ -112,6 +121,11 @@ input LikeDto {
   user_id: Int!
   post_id: Int
   comment_id: Int
+}
+
+input followerDto {
+  leader_id: Float!
+  follower_id: Float!
 }
 
 input LoginDto {

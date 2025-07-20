@@ -18,7 +18,7 @@ export class Posts {
   updated_at: Date;
 
   @Field(()=>Users)
-  @ManyToOne(() => Users, (user) =>user.id)
+  @ManyToOne(() => Users, (user) =>user.id,{onDelete:'CASCADE'})
   @JoinColumn({ name: 'user_id' })
   user: Users;
 

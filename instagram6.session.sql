@@ -1,1 +1,1 @@
-delete   from Comments 
+delete   from Users

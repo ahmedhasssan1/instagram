@@ -1,4 +1,5 @@
 import { Field, Int, ObjectType } from "@nestjs/graphql";
+import { Followers } from "src/followers/entity/followers";
 import { CreateDateColumn, Entity, PrimaryGeneratedColumn, Column } from "typeorm";
 
 @Entity()
