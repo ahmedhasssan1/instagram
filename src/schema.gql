@@ -62,6 +62,12 @@ type Hashtag {
   title: String!
 }
 
+type HashTagPosts {
+  id: Float!
+  hashTag: Hashtag!
+  post: Posts!
+}
+
 type Followers {
   id: Float!
   leader_id: Float!
@@ -95,6 +101,7 @@ type Mutation {
   createPhotoTags(tagsDto: PhotoTagsDto!): PhotoTags!
   CreateHastag(title: HashtagDto!): Hashtag!
   deleteHashtag(id: Float!): String!
+  create_HashTagPost(hashTagPostDto: Hashtag_postDto!): HashTagPosts!
   follow(followDto: followerDto!): Followers!
   unFollow(unFollowDto: followerDto!): String!
   login(login: LoginDto!): String!
@@ -153,6 +160,11 @@ input PhotoTagsDto {
 
 input HashtagDto {
   title: String!
+}
+
+input Hashtag_postDto {
+  hashtag_id: Float!
+  post_id: Float!
 }
 
 input followerDto {
