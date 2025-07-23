@@ -1,1 +1,1 @@
-delete   from Users
+SELECT * from photo_tags

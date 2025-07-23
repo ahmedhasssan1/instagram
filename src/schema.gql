@@ -46,6 +46,16 @@ type Comments {
   likesCount: Float!
 }
 
+type PhotoTags {
+  id: Float!
+  created_at: DateTime!
+  update_at: DateTime!
+  post: Posts!
+  user: Users!
+  x: Float!
+  y: Float!
+}
+
 type Hashtag {
   id: Float!
   created_at: DateTime!
@@ -64,6 +74,7 @@ type Query {
   findPost(findPost: Float!): Posts!
   findAllPost(pagination: Pageination!): PaginatedPosts!
   findComment(commentId: Float!): Comments!
+  getphotoTags(postId: Float!): [PhotoTags!]!
   findHastag(id: Float!): Hashtag!
   countFolllowers(countFollowersDto: Float!): Float!
 }
@@ -81,6 +92,7 @@ type Mutation {
   deleteComment(deleteCommentDto: DeleteCommentDto!): String!
   createLike(likeDto: LikeDto!): String!
   dislike(dislike: LikeDto!): String!
+  createPhotoTags(tagsDto: PhotoTagsDto!): PhotoTags!
   CreateHastag(title: HashtagDto!): Hashtag!
   deleteHashtag(id: Float!): String!
   follow(followDto: followerDto!): Followers!
@@ -130,6 +142,13 @@ input LikeDto {
   user_id: Int!
   post_id: Int
   comment_id: Int
+}
+
+input PhotoTagsDto {
+  postId: Float!
+  userId: Float!
+  x: Float!
+  y: Float!
 }
 
 input HashtagDto {
