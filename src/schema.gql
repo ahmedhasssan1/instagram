@@ -56,6 +56,13 @@ type PhotoTags {
   y: Float!
 }
 
+type CaptionTags {
+  id: Float!
+  created_at: DateTime!
+  user: Users!
+  post: Posts!
+}
+
 type Hashtag {
   id: Float!
   created_at: DateTime!
@@ -99,6 +106,7 @@ type Mutation {
   createLike(likeDto: LikeDto!): String!
   dislike(dislike: LikeDto!): String!
   createPhotoTags(tagsDto: PhotoTagsDto!): PhotoTags!
+  createCaptionTag(captionTagDto: CaptionTagsDto!): CaptionTags!
   CreateHastag(title: HashtagDto!): Hashtag!
   deleteHashtag(id: Float!): String!
   create_HashTagPost(hashTagPostDto: Hashtag_postDto!): HashTagPosts!
@@ -156,6 +164,11 @@ input PhotoTagsDto {
   userId: Float!
   x: Float!
   y: Float!
+}
+
+input CaptionTagsDto {
+  postID: Float!
+  userID: Float!
 }
 
 input HashtagDto {

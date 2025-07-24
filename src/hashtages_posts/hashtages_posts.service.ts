@@ -16,6 +16,7 @@ export class HashtagesPostsService {
     async create_hashTag_Posts(hashTag:Hashtag_postDto):Promise<HashTagPosts>{
         const findHasTag=await this.hashTagService.findHashtag(hashTag.hashtag_id);
         const findPost=await this.postService.findPost(hashTag.post_id);
+      
 
         const NewPostHashTag=await this.hashTagPostsRepo.create({
             hashTag:findHasTag,
