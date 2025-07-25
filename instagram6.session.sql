@@ -1,1 +1,1 @@
-SELECT * from photo_tags
+SELECT * from caption_tags

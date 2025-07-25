@@ -88,6 +88,7 @@ type Query {
   findAllPost(pagination: Pageination!): PaginatedPosts!
   findComment(commentId: Float!): Comments!
   getphotoTags(postId: Float!): [PhotoTags!]!
+  getpostCaptioTag(postCaptionTagPostID: Float!): [CaptionTags!]!
   findHastag(id: Float!): Hashtag!
   countFolllowers(countFollowersDto: Float!): Float!
 }
@@ -107,6 +108,7 @@ type Mutation {
   dislike(dislike: LikeDto!): String!
   createPhotoTags(tagsDto: PhotoTagsDto!): PhotoTags!
   createCaptionTag(captionTagDto: CaptionTagsDto!): CaptionTags!
+  deleteCaptioTag(captionTagId: Float!): String!
   CreateHastag(title: HashtagDto!): Hashtag!
   deleteHashtag(id: Float!): String!
   create_HashTagPost(hashTagPostDto: Hashtag_postDto!): HashTagPosts!
