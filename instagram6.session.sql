@@ -1,1 +1,1 @@
-SELECT * from caption_tags
+SELECT * from posts

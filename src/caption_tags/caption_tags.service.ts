@@ -6,6 +6,7 @@ import { CaptionTagsDto } from './dto/captiontags.dto';
 import { PostsService } from 'src/posts/posts.service';
 import { UsersService } from 'src/users/users.service';
 import { Posts } from 'src/posts/entity/posts.entity';
+import { knex } from 'src/knex';
 
 @Injectable()
 export class CaptionTagsService {
@@ -17,8 +18,15 @@ export class CaptionTagsService {
         const findPost=await this.postService.findPost(captiontag.postID);
         const findUser=await this.UserService.findOneUser(captiontag.userID);
         const findTag=await this.CaptionTagRepo.findOne({where:{post:{id:captiontag.postID} ,user:{id:captiontag.userID}},relations:['user','post']});
-        if(findTag){
-            throw new BadRequestException("this user alradt  you tagged  him");
+        // if(findTag){
+        //     throw new BadRequestException("this user alradt  you tagged  him");
+        // }
+        const isFollowing=await knex('followers').where({
+            follower_id:captiontag.userID,
+            leader_id:findPost.user.id
+        }).first()
+        if(!isFollowing){
+            throw new BadRequestException('the user not followed you')
         }
         const newCaption_tag=await this.CaptionTagRepo.create({
             post:findPost,
@@ -43,6 +51,7 @@ export class CaptionTagsService {
         await this.CaptionTagRepo.remove(findCaptiontag);
         return 'caption Tag Deleted';
     }
+    
 
 }
 

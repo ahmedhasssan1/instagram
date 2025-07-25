@@ -48,6 +48,7 @@ import { BullModule } from '@nestjs/bullmq';
       synchronize: true, 
       autoLoadEntities:true,
     }),
+    
     UsersModule,
     PostsModule,
     CommentsModule,
