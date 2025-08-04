@@ -39,15 +39,6 @@ services:
       - "6379:6379"
     networks:
       - app_network
-
-  tres:
-  build:
-    container_name:aasdfsa
-    ports:
-    -"1232:12241"
-    environment:
-      - dbname=instagram2
-
   
 
 networks:

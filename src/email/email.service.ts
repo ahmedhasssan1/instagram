@@ -18,7 +18,7 @@ export class EmailService {
     });
   }
 
-  async sendEmail(email: string, name: string, otp: string): Promise<string> {
+  async sendEmail(email: string, name: string, otp?: string): Promise<string> {
     const transporter = this.emailTransport();
 
     const mailOptions: nodemailer.SendMailOptions = {
