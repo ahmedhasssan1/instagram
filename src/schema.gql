@@ -114,6 +114,7 @@ type Mutation {
   create_HashTagPost(hashTagPostDto: Hashtag_postDto!): HashTagPosts!
   follow(followDto: followerDto!): Followers!
   unFollow(unFollowDto: followerDto!): String!
+  writeToFirebase: Boolean!
   login(login: LoginDto!): String!
   sendOtp(email: String!, name: String!): String!
   verfication(otp: resetPasswordDto!): String!
