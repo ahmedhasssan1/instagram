@@ -3,6 +3,7 @@
 /node_modules
 /build
 
+noty.ts
 # Logs
 logs
 *.log
