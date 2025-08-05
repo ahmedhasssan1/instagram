@@ -22,7 +22,8 @@ export class FirebaseService implements OnModuleInit {
   }
 
   async writeExample(): Promise<void> {
-    await this.db.ref('test').set({ message: 'Hello from NestJS!' });
+    await this.db.ref('ahmed').set({ message: 'new user !'});
+    await this.db.ref('test').set({ message: 'oma'});
     console.log('Data written successfully');
   }
 }

@@ -51,11 +51,7 @@ export class PostsService {
       console.log('cache missed');
     }
 
-    const allPosts = await this.postRepo.find({
-      skip: offset,
-      take: limit,
-      order: { created_at: 'DESC' },
-    });
+    const allPosts = await this.postRepo.find();
 
     if (!allPosts.length) {
       throw new NotFoundException(`No posts on page ${page}`);
