@@ -2,22 +2,26 @@
 import { AuthService } from './auth.service';
 import { LoginDto } from './dto/login.dto';
 import { otpService } from './otp.service';
-import { otpDto, resetPasswordDto } from './dto/otp.dto';
-import { privateDecrypt } from 'crypto';
+import {  resetPasswordDto } from './dto/otp.dto';
 import { UsersService } from 'src/users/users.service';
-import { Resolver, Mutation, Args, Context, GraphQLExecutionContext } from '@nestjs/graphql'; // ✅ Import Context
-import { Request } from 'express'; // ✅ Optional, if you want to type ctx.req
+import { Resolver, Mutation, Args, Context } from '@nestjs/graphql'; 
+import { Request } from 'express'; 
 import { Response } from 'express';
+import { RedisService } from 'src/redis/redis.service';
+import { NotFoundException } from '@nestjs/common';
+import { Public } from './guradAuth/check_JWT';
 
 @Resolver()
 export class AuthResolver {
   constructor(private readonly authService: AuthService,
     private readonly otpservice:otpService,
-    private readonly userservice:UsersService
+    private readonly userservice:UsersService,
+    private readonly redisservice:RedisService
   ) {}
 
 
  @Mutation(() => String)
+ @Public()
   async login(
     @Args('login') login: LoginDto,
     @Context() context: {req:Request,res:Response},
@@ -46,7 +50,12 @@ sendOtp(
     return result;
   }
 @Mutation(() => String)
-logout(@Context() ctx: { res: Response }) {
+async logout(@Context() ctx: { res: Response,req:Request }) {
+  const token=ctx.req.cookies?.access_token;
+  if(!token){
+    throw new NotFoundException("no jwt exist in req")
+  }
+  await this.redisservice.setValue(`blaclist:${token}`,'true',3500)
   ctx.res.clearCookie('access_token')
   return 'Logged out';
 } 

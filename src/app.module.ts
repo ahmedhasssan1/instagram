@@ -18,8 +18,9 @@ import { ConfigModule } from '@nestjs/config';
 import { FirebaseModule } from './firebase/firebase.module';
 import { AuthModule } from './auth/auth.module';
 import { RedisModule } from './redis/redis.module';
-import { METHODS } from 'http';
-import { BullModule } from '@nestjs/bullmq';
+import { APP_GUARD } from '@nestjs/core';
+import { JwtGuard } from './auth/guradAuth/check_JWT';
+import { JwtService } from '@nestjs/jwt';
 
 @Module({
   imports:[
@@ -48,6 +49,7 @@ import { BullModule } from '@nestjs/bullmq';
       synchronize: true, 
       autoLoadEntities:true,
     }),
+
     
     UsersModule,
     PostsModule,
@@ -64,6 +66,11 @@ import { BullModule } from '@nestjs/bullmq';
     
   ],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [JwtService,
+    AppService,{
+    provide:APP_GUARD,
+    useClass:JwtGuard
+  }
+],
 })
 export class AppModule {}

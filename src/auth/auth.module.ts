@@ -7,6 +7,7 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { RedisModule } from 'src/redis/redis.module';
 import { EmailModule } from 'src/email/email.module';
 import { otpService } from './otp.service';
+import { JwtGuard } from './guradAuth/check_JWT';
 
 @Module({
   imports:[UsersModule,JwtModule.registerAsync({
@@ -20,7 +21,7 @@ import { otpService } from './otp.service';
   EmailModule,
   RedisModule
 ],
-  providers: [AuthResolver, AuthService,otpService],
-  // exports:[otpService]
+  providers: [AuthResolver, AuthService,otpService,JwtGuard],
+  // exports:[JwtGuard]
 })
 export class AuthModule {}

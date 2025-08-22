@@ -44,7 +44,6 @@ export class AuthService {
     res.cookie('access_token', accessToken, {
       httpOnly: true,
       secure: false, // Set to false if running locally without HTTPS
-      path: '/',
       sameSite: 'strict',
       maxAge: 1000 * 60 * 60 * 24,
     });
