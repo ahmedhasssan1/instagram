@@ -9,7 +9,7 @@ import Redis from 'ioredis';
     provide:'REDIS_CLIENT',
     useFactory:()=>{
       return new Redis({
-        host: '192.168.116.128',
+        host: process.env.redis_host,
         port: Number(process.env.REDIS_PORT) ,
       })
     }

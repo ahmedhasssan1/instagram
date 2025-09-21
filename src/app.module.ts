@@ -21,7 +21,6 @@ import { RedisModule } from './redis/redis.module';
 import { APP_GUARD } from '@nestjs/core';
 import { JwtGuard } from './auth/guradAuth/check_JWT';
 import { JwtService } from '@nestjs/jwt';
-
 @Module({
   imports:[
     GraphQLModule.forRoot<ApolloDriverConfig>({
@@ -41,7 +40,7 @@ import { JwtService } from '@nestjs/jwt';
     TypeOrmModule.forRoot({
       type: 'postgres',
       host: 'localhost',
-      port: 4000, 
+      port: Number(process.env.DATABASE_PORT ), 
       username: 'postgres',
       password:process.env.data_base_pass,
       database: process.env.dataBaseName,
