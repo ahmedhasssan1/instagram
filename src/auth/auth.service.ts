@@ -13,7 +13,7 @@ import * as crypto from 'crypto';
 import { compare, hash } from 'bcrypt';
 
 import { RedisService } from 'src/redis/redis.service';
-  import { Request } from 'express';
+import { Request } from 'express';
 import { Response } from 'express';
 
 @Injectable()
@@ -41,6 +41,7 @@ export class AuthService {
       email: userExist.email,
     };
     const accessToken = await this.jwtService.signAsync(payload);
+    const refreshToken=await this.createRefreshToken(userExist.id);
     res.cookie('access_token', accessToken, {
       httpOnly: true,
       secure: false, // Set to false if running locally without HTTPS
@@ -48,6 +49,12 @@ export class AuthService {
       maxAge: 1000 * 60 * 60 * 24,
     });
 
-    return accessToken;
+    return {accessToken,refreshToken};
+  }
+  async createRefreshToken(userId: number) {
+    const refreshToken = crypto.randomBytes(32).toString('hex');
+    const hashed = await bcrypt.hash(refreshToken, 10);
+    await this.userService.updateUser(userId, { refreshToken:hashed  });
+    return refreshToken;
   }
 }

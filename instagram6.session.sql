@@ -1,1 +1,1 @@
-SELECT * from comments
+SELECT * from users

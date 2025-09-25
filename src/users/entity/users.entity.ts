@@ -1,6 +1,7 @@
 import { Field, Int, ObjectType } from "@nestjs/graphql";
 import { Followers } from "src/followers/entity/followers";
 import { CreateDateColumn, Entity, PrimaryGeneratedColumn, Column } from "typeorm";
+import { nullable } from "zod";
 
 @Entity()
 @ObjectType()
@@ -37,6 +38,9 @@ export class Users{
     @Field(()=>String)
     @Column() 
     password:string
+
+    @Column({nullable:true})
+    refreshToken:string
 
     @Field(()=>String)
     @Column() 

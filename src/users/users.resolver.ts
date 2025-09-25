@@ -18,4 +18,8 @@ export class UsersResolver {
   findUser(@Args('userId',{type:()=>Int}) userid:number){
     return this.usersService.findOneUser(userid)
   }
+  @Query(()=>Users)
+  async findUserByEmail(@Args('email')email:string){
+    return await this.usersService.findUserByEmail(email);
+  }
 }

@@ -10,6 +10,8 @@ import { Response } from 'express';
 import { RedisService } from 'src/redis/redis.service';
 import { NotFoundException } from '@nestjs/common';
 import { Public } from './guradAuth/check_JWT';
+import { object } from 'zod';
+import { LoginResponseDto } from './dto/token.dto';
 
 @Resolver()
 export class AuthResolver {
@@ -20,12 +22,12 @@ export class AuthResolver {
   ) {}
 
 
- @Mutation(() => String)
+ @Mutation(()=>LoginResponseDto)
  @Public()
   async login(
     @Args('login') login: LoginDto,
     @Context() context: {req:Request,res:Response},
-  ): Promise<string> {
+  ) {
     const result=await this.authService.login(login,context.res);
     return result;
   }

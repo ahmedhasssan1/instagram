@@ -40,13 +40,13 @@ import { JwtService } from '@nestjs/jwt';
     TypeOrmModule.forRoot({
       type: 'postgres',
       host: 'localhost',
-      port: Number(process.env.DATABASE_PORT ), 
+      port: 4000, 
       username: 'postgres',
       password:process.env.data_base_pass,
       database: process.env.dataBaseName,
-      // entities: [__dirname + '/../**/*.entity{.ts,.js}'], 
       synchronize: true, 
       autoLoadEntities:true,
+      // ssl:{secureProtocol:'TLSv1_3_method'}
     }),
 
     

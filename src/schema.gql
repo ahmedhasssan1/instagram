@@ -81,9 +81,15 @@ type Followers {
   follower_id: Float!
 }
 
+type LoginResponseDto {
+  accessToken: String!
+  refreshToken: String!
+}
+
 type Query {
   hello: String!
   findUser(userId: Int!): Users!
+  findUserByEmail(email: String!): Users!
   findPost(findPost: Float!): Posts!
   findAllPost(pagination: Pageination!): PaginatedPosts!
   findComment(commentId: Float!): Comments!
@@ -115,7 +121,7 @@ type Mutation {
   follow(followDto: followerDto!): Followers!
   unFollow(unFollowDto: followerDto!): String!
   writeToFirebase: Boolean!
-  login(login: LoginDto!): String!
+  login(login: LoginDto!): LoginResponseDto!
   sendOtp(email: String!, name: String!): String!
   verfication(otp: resetPasswordDto!): String!
   logout: String!
