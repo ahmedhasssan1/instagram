@@ -14,14 +14,14 @@ import { JwtGuard } from './guradAuth/check_JWT';
     imports:[ConfigModule],
     inject:[ConfigService],
     useFactory:(configService:ConfigService)=>({
-      secret:configService.get<string>('jwt_sercet'),
-      signOptions:{expiresIn:'2h'}
+      secret:configService.get<string>('JWT_SECRET'),
+      signOptions:{expiresIn:'20s'}
     })
   }),
   EmailModule,
   RedisModule
 ],
   providers: [AuthResolver, AuthService,otpService,JwtGuard],
-  // exports:[JwtGuard]
+  exports:[AuthService]
 })
 export class AuthModule {}

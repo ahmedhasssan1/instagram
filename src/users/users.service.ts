@@ -34,7 +34,7 @@ export class UsersService {
     return this.userRepo.save(user);
   }
   async findOneUser(id: number): Promise<Users> {
-    const findUser = await this.userRepo.findOneBy({ id });
+    const findUser = await this.userRepo.findOne({where:{id}});
     if (!findUser) {
       throw new NotFoundException('this user not exist');
     }

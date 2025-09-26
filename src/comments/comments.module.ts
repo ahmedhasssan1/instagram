@@ -11,7 +11,7 @@ import { JwtModule } from '@nestjs/jwt';
 import { RedisModule } from 'src/redis/redis.module';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Comments]), JwtModule.register({
+  imports: [TypeOrmModule.forFeature([Comments]),AuthModule, JwtModule.register({
       secret: process.env.JWT_SECRET,  
       signOptions: { expiresIn: '1d' }, 
     }),UsersModule, PostsModule,RedisModule],

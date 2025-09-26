@@ -39,8 +39,8 @@ export class Users{
     @Column() 
     password:string
 
-    @Column({nullable:true})
-    refreshToken:string
+    @Column({type:'text',nullable:true})
+    refreshToken:string |null
 
     @Field(()=>String)
     @Column() 

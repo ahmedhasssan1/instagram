@@ -46,6 +46,11 @@ type Comments {
   likesCount: Float!
 }
 
+type LoginResponseDto {
+  accessToken: String!
+  refreshToken: String!
+}
+
 type PhotoTags {
   id: Float!
   created_at: DateTime!
@@ -81,11 +86,6 @@ type Followers {
   follower_id: Float!
 }
 
-type LoginResponseDto {
-  accessToken: String!
-  refreshToken: String!
-}
-
 type Query {
   hello: String!
   findUser(userId: Int!): Users!
@@ -110,6 +110,11 @@ type Mutation {
   setREdisValue(keyAndValue: setRedisDto!): String!
   createComment(createCommentinput: CreateCommentInput!): Comments!
   deleteComment(deleteCommentDto: DeleteCommentDto!): String!
+  login(login: LoginDto!): LoginResponseDto!
+  sendOtp(email: String!, name: String!): String!
+  verfication(otp: resetPasswordDto!): String!
+  logout: String!
+  sendemail(seendEmailDto: String!): String!
   createLike(likeDto: LikeDto!): String!
   dislike(dislike: LikeDto!): String!
   createPhotoTags(tagsDto: PhotoTagsDto!): PhotoTags!
@@ -121,11 +126,6 @@ type Mutation {
   follow(followDto: followerDto!): Followers!
   unFollow(unFollowDto: followerDto!): String!
   writeToFirebase: Boolean!
-  login(login: LoginDto!): LoginResponseDto!
-  sendOtp(email: String!, name: String!): String!
-  verfication(otp: resetPasswordDto!): String!
-  logout: String!
-  sendemail(seendEmailDto: String!): String!
 }
 
 input CreateUserDto {
@@ -161,6 +161,17 @@ input DeleteCommentDto {
   user_id: Int!
 }
 
+input LoginDto {
+  email: String!
+  password: String!
+}
+
+input resetPasswordDto {
+  email: String!
+  otp: String!
+  newPassword: String!
+}
+
 input LikeDto {
   target: String!
   user_id: Int!
@@ -192,15 +203,4 @@ input Hashtag_postDto {
 input followerDto {
   leader_id: Float!
   follower_id: Float!
-}
-
-input LoginDto {
-  email: String!
-  password: String!
-}
-
-input resetPasswordDto {
-  email: String!
-  otp: String!
-  newPassword: String!
 }
