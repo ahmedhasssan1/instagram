@@ -105,7 +105,8 @@ input Pageination {
 }
 
 type Mutation {
-  createUser(createUser: CreateUserDto!): Users!
+  signup(createUserInput: CreateUserDto!): String!
+  sendemail(seendEmailDto: String!): String!
   createPost(createPost: CreatePostDto!): Posts!
   setREdisValue(keyAndValue: setRedisDto!): String!
   createComment(createCommentinput: CreateCommentInput!): Comments!
@@ -114,7 +115,6 @@ type Mutation {
   sendOtp(email: String!, name: String!): String!
   verfication(otp: resetPasswordDto!): String!
   logout: String!
-  sendemail(seendEmailDto: String!): String!
   createLike(likeDto: LikeDto!): String!
   dislike(dislike: LikeDto!): String!
   createPhotoTags(tagsDto: PhotoTagsDto!): PhotoTags!

@@ -74,7 +74,7 @@ export class otpService {
     await this.applyCooldown(email, this.SHORT_COOLDOWN_TIME);
 
     console.log(`Generated OTP for ${email}: ${otp}`);
-    await this.emailService.sendEmail(email, name, otp);
+    await this.emailService.sendOtpEmail(email, name, otp);
     return otp;
   }
 

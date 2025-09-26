@@ -13,7 +13,7 @@ export class EmailResolver {
   @Mutation(()=>String)
   async sendemail(@Args('seendEmailDto')email:string,name:string,otp:string){
     
-    const emailsend=await this.emailService.sendEmail(email,name,otp);
+    const emailsend=await this.emailService.sendOtpEmail(email,name,otp);
     await this.emaiProces.add('process',emailsend);
     return emailsend;
 

@@ -12,10 +12,14 @@ import * as bcrypt from 'bcrypt';
 import { otpDto, resetPasswordDto } from 'src/auth/dto/otp.dto';
 import { otpService } from 'src/auth/otp.service';
 import th from 'zod/v4/locales/th.cjs';
+import { EmailService } from 'src/email/email.service';
 
 @Injectable()
 export class UsersService {
-  constructor(@InjectRepository(Users) private userRepo: Repository<Users>) {}
+  constructor(
+    @InjectRepository(Users) private userRepo: Repository<Users>,
+    private readonly emailSerive: EmailService,
+  ) {}
 
   async createUser(userDto: CreateUserDto): Promise<Users> {
     const { password, ...rest } = userDto;
@@ -33,8 +37,20 @@ export class UsersService {
     console.log(hashPassword);
     return this.userRepo.save(user);
   }
+
+  async registerUser(userDto: CreateUserDto) {
+    const user = await this.createUser(userDto);
+    const payload = { sub: user.id, email: user.email };
+    // 3. Send verification email
+    await this.emailSerive.sendVerificationEmail(user.email);
+
+    return {
+      message: 'User registered successfully. Please verify your email.',
+    };
+  }
+
   async findOneUser(id: number): Promise<Users> {
-    const findUser = await this.userRepo.findOne({where:{id}});
+    const findUser = await this.userRepo.findOne({ where: { id } });
     if (!findUser) {
       throw new NotFoundException('this user not exist');
     }
