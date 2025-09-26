@@ -115,6 +115,7 @@ type Mutation {
   sendOtp(email: String!, name: String!): String!
   verfication(otp: resetPasswordDto!): String!
   logout: String!
+  changePassword(changePasswordInput: ChangePasswordInput!): String!
   createLike(likeDto: LikeDto!): String!
   dislike(dislike: LikeDto!): String!
   createPhotoTags(tagsDto: PhotoTagsDto!): PhotoTags!
@@ -169,6 +170,12 @@ input LoginDto {
 input resetPasswordDto {
   email: String!
   otp: String!
+  newPassword: String!
+}
+
+input ChangePasswordInput {
+  currentPassword: String!
+  userId: Float!
   newPassword: String!
 }
 

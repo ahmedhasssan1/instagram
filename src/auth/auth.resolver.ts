@@ -8,11 +8,12 @@ import { Resolver, Mutation, Args, Context } from '@nestjs/graphql';
 import { Request } from 'express';
 import { Response } from 'express';
 import { RedisService } from 'src/redis/redis.service';
-import { NotFoundException } from '@nestjs/common';
+import { NotFoundException, UnauthorizedException } from '@nestjs/common';
 import { boolean, object, string } from 'zod';
 import { LoginResponseDto } from './dto/token.dto';
 import { JwtService } from '@nestjs/jwt';
 import { Public } from './guradAuth/check_JWT';
+import { ChangePasswordInput } from './dto/changePassword.dto';
 
 @Resolver()
 export class AuthResolver {
@@ -54,5 +55,17 @@ export class AuthResolver {
   async logout(@Context() ctx: { res: Response; req: Request }) {
     const token = ctx.req.cookies?.access_token;
     return await this.authService.logout(token, ctx.res);
+  }
+  @Mutation(() => String)
+  async changePassword(
+    @Context() ctx: { res: Response; req: Request },
+    @Args('changePasswordInput') changPasswordDto: ChangePasswordInput,
+  ) {
+    const token = ctx.req.cookies?.access_token;
+    const verfitTok = await this.authService.verfiyToken(token);
+    if (verfitTok.sub != changPasswordDto.userId) {
+      throw new UnauthorizedException('can not access thisenpoint');
+    }
+    return await this.authService.changePassword(changPasswordDto);
   }
 }

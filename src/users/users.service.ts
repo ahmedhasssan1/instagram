@@ -9,9 +9,7 @@ import { Users } from './entity/users.entity';
 import { Repository } from 'typeorm';
 import { CreateUserDto } from './dto/createUser.dto';
 import * as bcrypt from 'bcrypt';
-import { otpDto, resetPasswordDto } from 'src/auth/dto/otp.dto';
-import { otpService } from 'src/auth/otp.service';
-import th from 'zod/v4/locales/th.cjs';
+import {  resetPasswordDto } from 'src/auth/dto/otp.dto';
 import { EmailService } from 'src/email/email.service';
 
 @Injectable()
@@ -87,5 +85,8 @@ export class UsersService {
 
     const updatedUser = this.userRepo.merge(user, body);
     return await this.userRepo.save(updatedUser);
+  }
+  async saveUser(user:Users):Promise<Users>{
+    return await this.userRepo.save(user);
   }
 }

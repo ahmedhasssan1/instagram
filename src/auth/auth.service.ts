@@ -1,4 +1,5 @@
 import {
+  BadRequestException,
   Injectable,
   NotFoundException,
   UnauthorizedException,
@@ -11,6 +12,8 @@ import { RedisService } from 'src/redis/redis.service';
 import { Response } from 'express';
 import { ConfigService } from '@nestjs/config';
 import * as dotenv from 'dotenv';
+import { EmailService } from 'src/email/email.service';
+import { ChangePasswordInput } from './dto/changePassword.dto';
 dotenv.config();
 @Injectable()
 export class AuthService {
@@ -18,8 +21,18 @@ export class AuthService {
     private userService: UsersService,
     private jwtService: JwtService,
     private redicClient: RedisService,
+    private emailService: EmailService,
   ) {}
-
+  async generateToken(user: number) {
+    const payload = {
+      sub: user,
+    };
+    const token = await this.jwtService.signAsync(payload, {
+      secret: process.env.JWT_SECRET,
+      expiresIn: '2m',
+    });
+    return token;
+  }
   async login(login: LoginDto, res: Response) {
     const userExist = await this.userService.findUserByEmail(login.email);
     if (!userExist) {
@@ -46,6 +59,12 @@ export class AuthService {
     });
 
     return { accessToken, refreshToken };
+  }
+  async verfiyToken(token: string) {
+    const verfiyToken = await this.jwtService.verifyAsync(token, {
+      secret: process.env.JWT_SECRET,
+    });
+    return verfiyToken;
   }
   async createRefreshToken(userId: number) {
     const payload = { sub: userId };
@@ -88,8 +107,8 @@ export class AuthService {
     }
 
     const payload = this.jwtService.decode(token);
-    console.log('debugging ',payload);
-    
+    console.log('debugging ', payload);
+
     if (!payload) {
       throw new UnauthorizedException('Invalid or expired token');
     }
@@ -118,5 +137,17 @@ export class AuthService {
     } catch {
       return false;
     }
+  }
+  async changePassword(input: ChangePasswordInput): Promise<string> {
+    const user = await this.userService.findOneUser(input.userId);
+    if (!user) throw new UnauthorizedException('User not found');
+
+    const isMatch = await bcrypt.compare(input.currentPassword, user.password);
+    if (!isMatch)
+      throw new BadRequestException('Current password is incorrect');
+
+    user.password = await bcrypt.hash(input.newPassword, 10);
+    await this.userService.saveUser(user);
+    return 'Password changed successfully';
   }
 }
