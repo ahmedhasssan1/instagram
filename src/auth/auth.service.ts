@@ -87,22 +87,19 @@ export class AuthService {
       throw new NotFoundException('no jwt exist in req');
     }
 
-    let payload: any;
-    try {
-      payload = this.jwtService.verify(token,{
-        secret:process.env.JWT_REFRESH_SECRET
-      });
-    } catch (e) {
+    const payload = this.jwtService.decode(token);
+    console.log('debugging ',payload);
+    
+    if (!payload) {
       throw new UnauthorizedException('Invalid or expired token');
     }
-    
+
     await this.userService.updateUser(payload.sub, { refreshToken: null });
 
-    const decoded: any = this.jwtService.decode(token);
-    // const ttl = decoded?.exp
-    //   ? decoded.exp - Math.floor(Date.now() / 1000)
-    //   : 3600;
-    await this.redicClient.setValue(`blacklist:${token}`, 'true', );
+    const ttl = payload?.exp
+      ? payload.exp - Math.floor(Date.now() / 1000)
+      : 3600;
+    await this.redicClient.setValue(`blacklist:${token}`, 'true');
 
     res.clearCookie('access_token');
 

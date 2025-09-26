@@ -12,6 +12,8 @@ import { RedisService } from 'src/redis/redis.service';
 import { AuthService } from 'src/auth/auth.service';
 import { UsersService } from 'src/users/users.service';
 import * as dotenv from 'dotenv';
+
+
 dotenv.config();
 export const IS_PUBLIC = 'isPublic';
 export const Public = () => SetMetadata(IS_PUBLIC, true);
@@ -28,6 +30,7 @@ export class JwtGuard implements CanActivate {
   async canActivate(context: ExecutionContext): Promise<boolean> {
     const ctx = GqlExecutionContext.create(context);
     const req = ctx.getContext().req;
+    const res = ctx.getContext().res;
 
     const isPublic = this.reflector.getAllAndOverride<boolean>(IS_PUBLIC, [
       context.getHandler(),
@@ -55,23 +58,36 @@ export class JwtGuard implements CanActivate {
       return true;
     } catch (err) {
       if (err.name === 'TokenExpiredError') {
-        const decoded: any = this.jwtService.decode(token);
+        const decoded = this.jwtService.decode(token);
+
         if (!decoded || !decoded.sub) {
           throw new UnauthorizedException('Invalid token');
         }
 
         const user = await this.userService.findOneUser(decoded.sub);
-        if (!user ||!user.refreshToken) {
+        await this.authService.createRefreshToken(user.id);
+        if (!user) {
           throw new UnauthorizedException('invalid user');
         }
+        const payload = {
+          sub: user.id,
+          email: user.email,
+        };
+        const newAccesstoken = await this.jwtService.signAsync(payload, {
+          secret: process.env.JWT_SECRET,
+          expiresIn: '30s',
+        });
 
-      
-
-        req.user = { sub: decoded.sub }; // minimal user info
+        res.cookie('access_token', newAccesstoken, {
+          httpOnly: true,
+          secure: false,
+          sameSite: 'strict',
+          maxAge: 1000 * 60 * 60 * 24,
+        });
+        req.user = payload;
         return true;
       }
 
-      console.log('[JwtGuard] Access token invalid:', err.message);
       throw new UnauthorizedException('Invalid or expired token');
     }
   }

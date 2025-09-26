@@ -16,9 +16,9 @@ export class otpService {
     private emailService: EmailService,
   ) {}
 
-  private readonly OTP_EXPIRATION_TIME = 5 * 60; // 5 minutes
-  private readonly SHORT_COOLDOWN_TIME = 60; // 1 minute
-  private readonly LONG_COOLDOWN_TIME = 3600; // 1 hour
+  private readonly OTP_EXPIRATION_TIME = 5 * 60; 
+  private readonly SHORT_COOLDOWN_TIME = 60; 
+  private readonly LONG_COOLDOWN_TIME = 3600; 
 
   generateRandomOtp(): string {
     return crypto.randomInt(100000, 1000000).toString();
@@ -68,12 +68,11 @@ export class otpService {
     await this.isOnCooldown(email);
 
     const otp = this.generateRandomOtp();
-    const hashedOtp = await hash(otp, 10); // always use saltRounds
+    const hashedOtp = await hash(otp, 10); 
 
     await this.storeOtp(email, hashedOtp);
     await this.applyCooldown(email, this.SHORT_COOLDOWN_TIME);
 
-    // Normally you would send the OTP via email/SMS here
     console.log(`Generated OTP for ${email}: ${otp}`);
     await this.emailService.sendEmail(email, name, otp);
     return otp;

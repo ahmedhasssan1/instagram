@@ -12,6 +12,7 @@ import { NotFoundException } from '@nestjs/common';
 import { boolean, object, string } from 'zod';
 import { LoginResponseDto } from './dto/token.dto';
 import { JwtService } from '@nestjs/jwt';
+import { Public } from './guradAuth/check_JWT';
 
 @Resolver()
 export class AuthResolver {
@@ -24,7 +25,7 @@ export class AuthResolver {
   ) {}
 
   @Mutation(() => LoginResponseDto)
-  // @Public()
+  @Public()
   async login(
     @Args('login') login: LoginDto,
     @Context() context: { req: Request; res: Response },
