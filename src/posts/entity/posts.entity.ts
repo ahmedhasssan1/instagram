@@ -13,7 +13,7 @@ export class Posts {
   @Field(() => Date)
   created_at: Date;
 
-  @UpdateDateColumn({ type: 'timestamp' })
+  @UpdateDateColumn({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
   @Field(() => Date)
   updated_at: Date;
 

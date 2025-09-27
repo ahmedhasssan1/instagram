@@ -39,6 +39,7 @@ type Posts {
 type PaginatedPosts {
   items: [Posts!]!
   totalCount: Int!
+  allPosts: [Posts!]!
 }
 
 type Comments {
@@ -91,7 +92,7 @@ type Query {
   findUser(userId: Int!): Users!
   findUserByEmail(email: String!): Users!
   findPost(findPost: Float!): Posts!
-  findAllPost(pagination: Pageination!): PaginatedPosts!
+  findAllPost(pagination: PaginationInput): PaginatedPosts!
   findComment(commentId: Float!): Comments!
   getphotoTags(postId: Float!): [PhotoTags!]!
   getpostCaptioTag(postCaptionTagPostID: Float!): [CaptionTags!]!
@@ -99,9 +100,9 @@ type Query {
   countFolllowers(countFollowersDto: Float!): Float!
 }
 
-input Pageination {
-  page: Float!
-  limit: Float!
+input PaginationInput {
+  page: Int!
+  limit: Int!
 }
 
 type Mutation {

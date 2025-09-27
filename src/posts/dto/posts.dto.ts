@@ -22,11 +22,3 @@ export class CreatePostDto {
   lng: number;
 }
 
-@ObjectType()
-export class PaginatedPosts {
-  @Field(() => [Posts])
-  items: Posts[];
-
-  @Field(() => Int)
-  totalCount: number;
-}

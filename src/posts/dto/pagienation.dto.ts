@@ -1,15 +1,14 @@
-import { Field, InputType } from "@nestjs/graphql";
-import { IsNumber } from "class-validator";
+import { ObjectType, Field, Int } from '@nestjs/graphql';
+import { Posts } from '../entity/posts.entity';
 
-@InputType()
-export class Pageination{
-    @Field()
-    @IsNumber()
-    page:number
+@ObjectType()
+export class PaginatedPosts {
+  @Field(() => [Posts])
+  items: Posts[];
 
-    @Field()
-    @IsNumber()
-    limit:number
+  @Field(() => Int)
+  totalCount: number;
 
-
+  @Field(() => [Posts])
+  allPosts: Posts[];
 }

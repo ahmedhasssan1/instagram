@@ -1,12 +1,13 @@
 import { All, Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Posts } from './entity/posts.entity';
-import { IsNull, Not, Repository } from 'typeorm';
+import { Repository } from 'typeorm';
 import { CreatePostDto } from './dto/posts.dto';
 import { UsersService } from 'src/users/users.service';
-import { Pageination } from './dto/pagienation.dto';
 import { RedisService } from 'src/redis/redis.service';
 import { plainToInstance } from 'class-transformer';
+import { PaginationInput } from './dto/pagination.input';
+import { PaginatedPosts } from './dto/pagienation.dto';
 
 @Injectable()
 export class PostsService {
@@ -29,43 +30,47 @@ export class PostsService {
   }
 
   async findPost(id: number): Promise<Posts> {
-    const findPost = await this.postRepo.findOne({where:{id},relations:['user']});
+    const findPost = await this.postRepo.findOne({
+      where: { id },
+      relations: ['user'],
+    });
     if (!findPost) {
       throw new NotFoundException('there no post with this id ');
     }
     return findPost;
   }
-  async findAllPosts(pagination: Pageination) {
-    const { limit, page } = pagination;
-    const offset = (page - 1) * limit;
-    const cacheKey = `posts_pages_page${page}_limit_${limit}`;
+  async findAllPosts(pagination: PaginationInput): Promise<PaginatedPosts> {
+  const { limit, page } = pagination;
+  const offset = (page - 1) * limit;
+  const cacheKey = `posts_page_${page}_limit_${limit}`;
 
-    const cached = await this.redisService.getValue(cacheKey);
-
-    if (cached) {
-      console.log('cache hit');
-      const parsed = JSON.parse(cached);
-      const items = plainToInstance(Posts, parsed);
-      return { items, totalCount: limit };
-    } else {
-      console.log('cache missed');
-    }
-
-    const allPosts = await this.postRepo.find();
-
-    if (!allPosts.length) {
-      throw new NotFoundException(`No posts on page ${page}`);
-    }
-
-    await this.redisService.setValue(
-      cacheKey,
-      JSON.stringify(allPosts),
-      60 * 10,
-    ); // 10 minutes
-
-    return { allPosts, totalCount: limit };
+  const cached = await this.redisService.getValue(cacheKey);
+  if (cached) {
+    console.log('cache hit');
+    return JSON.parse(cached) as PaginatedPosts;
   }
-  async save(post:Posts):Promise<Posts>{
+
+  console.log('cache missed');
+
+  const [items, totalCount] = await this.postRepo.findAndCount({
+    skip: offset,
+    take: limit,
+  });
+
+  if (!items.length) {
+    throw new NotFoundException(`No posts on page ${page}`);
+  }
+
+  const allPosts = await this.postRepo.find();
+
+  const response: PaginatedPosts = { items, totalCount, allPosts };
+
+  await this.redisService.setValue(cacheKey, JSON.stringify(response), 60 * 10);
+
+  return response;
+}
+
+  async save(post: Posts): Promise<Posts> {
     return this.postRepo.save(post);
   }
 }
