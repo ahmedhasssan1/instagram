@@ -21,35 +21,42 @@ import { RedisModule } from './redis/redis.module';
 import { APP_GUARD } from '@nestjs/core';
 import { JwtGuard } from './auth/guradAuth/check_JWT';
 import { JwtService } from '@nestjs/jwt';
+import { BullModule } from '@nestjs/bullmq';
 @Module({
-  imports:[
+  imports: [
     GraphQLModule.forRoot<ApolloDriverConfig>({
       driver: ApolloDriver,
-      autoSchemaFile: join(process.cwd(),'src/schema.gql'),
-      context: ({ req,res }) => ({ req,res}),   
+      autoSchemaFile: join(process.cwd(), 'src/schema.gql'),
+      context: ({ req, res }) => ({ req, res }),
       playground: {
         settings: {
-        "request.credentials": "include", 
-        }
+          'request.credentials': 'include',
+        },
       },
-
     }),
     ConfigModule.forRoot({
-      isGlobal:true
+      isGlobal: true,
     }),
     TypeOrmModule.forRoot({
       type: 'postgres',
       host: 'localhost',
-      port: 4000, 
+      port: 4000,
       username: 'postgres',
-      password:process.env.data_base_pass,
+      password: process.env.data_base_pass,
       database: process.env.dataBaseName,
-      synchronize: true, 
-      autoLoadEntities:true,
+      synchronize: true,
+      autoLoadEntities: true,
       // ssl:{secureProtocol:'TLSv1_3_method'}
     }),
+    BullModule.forRoot({
+      connection: {
+        host: process.env.redis_host,
+        port: Number(process.env.REDIS_PORT),
+      },
+      defaultJobOptions:{attempts:3}
+    }),
+    BullModule.registerQueue({name:'main-queue'}),
 
-    
     UsersModule,
     PostsModule,
     CommentsModule,
@@ -65,11 +72,13 @@ import { JwtService } from '@nestjs/jwt';
     
   ],
   controllers: [AppController],
-  providers: [JwtService,
-    AppService,{
-    provide:APP_GUARD,
-    useClass:JwtGuard
-  }
-],
+  providers: [
+    JwtService,
+    AppService,
+    {
+      provide: APP_GUARD,
+      useClass: JwtGuard,
+    },
+  ],
 })
 export class AppModule {}

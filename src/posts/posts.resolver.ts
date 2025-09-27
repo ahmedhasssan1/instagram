@@ -11,8 +11,6 @@ import { NotFoundException } from '@nestjs/common';
 @Resolver()
 export class PostsResolver {
   constructor(private readonly postsService: PostsService,
-  @InjectQueue('email') private readonly emailQueue:Queue
-
   ) {}
 
     @Mutation(()=>Posts)

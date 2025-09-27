@@ -1,22 +1,23 @@
 import { Args, Mutation, Resolver } from '@nestjs/graphql';
 import { EmailService } from './email.service';
-import { Sendemaildto } from './dto/sendEmail.input';
 import { InjectQueue } from '@nestjs/bullmq';
 import { Queue } from 'bullmq';
 
 @Resolver()
 export class EmailResolver {
   constructor(private readonly emailService: EmailService,
-    @InjectQueue('test') private readonly emaiProces:Queue
+    @InjectQueue('main-queue') private readonly mainQueue:Queue
   ) {}
 
   @Mutation(()=>String)
-  async sendemail(@Args('seendEmailDto')email:string,name:string,otp:string){
-    
-    const emailsend=await this.emailService.sendOtpEmail(email,name,otp);
-    await this.emaiProces.add('process',emailsend);
-    return emailsend;
+  async sendEmail(
+    @Args('email') email: string,
+    @Args('name') name: string,
+    @Args('otp') otp: string,
+  ) {
+    // Queue job data
+    await this.mainQueue.add('email-queue', { email, name, otp });
 
-    
+    return 'Email job queued successfully';
   }
 }
