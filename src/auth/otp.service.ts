@@ -16,9 +16,9 @@ export class otpService {
     private emailService: EmailService,
   ) {}
 
-  private readonly OTP_EXPIRATION_TIME = 5 * 60; 
-  private readonly SHORT_COOLDOWN_TIME = 60; 
-  private readonly LONG_COOLDOWN_TIME = 3600; 
+  private readonly OTP_EXPIRATION_TIME = 5 * 60;
+  private readonly SHORT_COOLDOWN_TIME = 60;
+  private readonly LONG_COOLDOWN_TIME = 3600;
 
   generateRandomOtp(): string {
     return crypto.randomInt(100000, 1000000).toString();
@@ -43,6 +43,7 @@ export class otpService {
     );
   }
 
+  
   async isOnCooldown(email: string): Promise<void> {
     const cooldownKey = `cooldown:otp:${email}`;
     const cooldownTimestamp = await this.redisClient.getValue(cooldownKey);
@@ -64,11 +65,12 @@ export class otpService {
     }
   }
 
+
   async requestOtp(email: string, name: string): Promise<string> {
     await this.isOnCooldown(email);
 
     const otp = this.generateRandomOtp();
-    const hashedOtp = await hash(otp, 10); 
+    const hashedOtp = await hash(otp, 10);
 
     await this.storeOtp(email, hashedOtp);
     await this.applyCooldown(email, this.SHORT_COOLDOWN_TIME);
@@ -77,6 +79,7 @@ export class otpService {
     await this.emailService.sendOtpEmail(email, name, otp);
     return otp;
   }
+
 
   async verifyOtp(email: string, otp: string): Promise<string> {
     const otpKey = `otp:${email}`;

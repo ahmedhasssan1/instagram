@@ -14,6 +14,8 @@ import { LoginResponseDto } from './dto/token.dto';
 import { JwtService } from '@nestjs/jwt';
 import { Public } from './guradAuth/check_JWT';
 import { ChangePasswordInput } from './dto/changePassword.dto';
+import { InjectQueue } from '@nestjs/bullmq';
+import { Queue } from 'bullmq';
 
 @Resolver()
 export class AuthResolver {
@@ -23,6 +25,7 @@ export class AuthResolver {
     private readonly userservice: UsersService,
     private readonly redisservice: RedisService,
     private readonly jwtService: JwtService,
+    @InjectQueue('main-queue') private emailQueue:Queue
   ) {}
 
   @Mutation(() => LoginResponseDto)
@@ -37,7 +40,10 @@ export class AuthResolver {
 
   @Mutation(() => String)
   sendOtp(@Args('email') email: string, @Args('name') name: string) {
-    return this.otpservice.requestOtp(email, name);
+    this.emailQueue.add('otp-process',{email,name})
+    // return this.otpservice.requestOtp(email, name);
+    return "otp proccess added to queue"
+
   }
   @Mutation(() => String)
   async verfication(@Args('otp') otp: resetPasswordDto) {

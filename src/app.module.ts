@@ -22,6 +22,7 @@ import { APP_GUARD } from '@nestjs/core';
 import { JwtGuard } from './auth/guradAuth/check_JWT';
 import { JwtService } from '@nestjs/jwt';
 import { BullModule } from '@nestjs/bullmq';
+import { BullmqModule } from './bullmq/bullmq.module';
 @Module({
   imports: [
     GraphQLModule.forRoot<ApolloDriverConfig>({
@@ -69,6 +70,7 @@ import { BullModule } from '@nestjs/bullmq';
     FirebaseModule,
     AuthModule,
     RedisModule,
+    BullmqModule,
     
   ],
   controllers: [AppController],

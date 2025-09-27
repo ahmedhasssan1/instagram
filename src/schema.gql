@@ -19,6 +19,11 @@ A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date
 """
 scalar DateTime
 
+type LoginResponseDto {
+  accessToken: String!
+  refreshToken: String!
+}
+
 type Posts {
   id: Int!
   created_at: DateTime!
@@ -44,11 +49,6 @@ type Comments {
   user_id: Int!
   post: Posts!
   likesCount: Float!
-}
-
-type LoginResponseDto {
-  accessToken: String!
-  refreshToken: String!
 }
 
 type PhotoTags {
@@ -107,15 +107,15 @@ input Pageination {
 type Mutation {
   signup(createUserInput: CreateUserDto!): String!
   sendEmail(email: String!, name: String!, otp: String!): String!
-  createPost(createPost: CreatePostDto!): Posts!
-  setREdisValue(keyAndValue: setRedisDto!): String!
-  createComment(createCommentinput: CreateCommentInput!): Comments!
-  deleteComment(deleteCommentDto: DeleteCommentDto!): String!
   login(login: LoginDto!): LoginResponseDto!
   sendOtp(email: String!, name: String!): String!
   verfication(otp: resetPasswordDto!): String!
   logout: String!
   changePassword(changePasswordInput: ChangePasswordInput!): String!
+  setREdisValue(keyAndValue: setRedisDto!): String!
+  createPost(createPost: CreatePostDto!): Posts!
+  createComment(createCommentinput: CreateCommentInput!): Comments!
+  deleteComment(deleteCommentDto: DeleteCommentDto!): String!
   createLike(likeDto: LikeDto!): String!
   dislike(dislike: LikeDto!): String!
   createPhotoTags(tagsDto: PhotoTagsDto!): PhotoTags!
@@ -138,30 +138,6 @@ input CreateUserDto {
   status: String!
 }
 
-input CreatePostDto {
-  user: Int!
-  caption: String
-  iat: Float!
-  lng: Float!
-}
-
-input setRedisDto {
-  key: String!
-  value: String!
-}
-
-input CreateCommentInput {
-  content: String!
-  userId: Int!
-  postId: Int!
-}
-
-input DeleteCommentDto {
-  post_id: Int!
-  comment_id: Int!
-  user_id: Int!
-}
-
 input LoginDto {
   email: String!
   password: String!
@@ -177,6 +153,30 @@ input ChangePasswordInput {
   currentPassword: String!
   userId: Float!
   newPassword: String!
+}
+
+input setRedisDto {
+  key: String!
+  value: String!
+}
+
+input CreatePostDto {
+  user: Int!
+  caption: String
+  iat: Float!
+  lng: Float!
+}
+
+input CreateCommentInput {
+  content: String!
+  userId: Int!
+  postId: Int!
+}
+
+input DeleteCommentDto {
+  post_id: Int!
+  comment_id: Int!
+  user_id: Int!
 }
 
 input LikeDto {
