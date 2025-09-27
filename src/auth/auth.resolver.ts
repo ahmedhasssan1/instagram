@@ -16,6 +16,7 @@ import { Public } from './guradAuth/check_JWT';
 import { ChangePasswordInput } from './dto/changePassword.dto';
 import { InjectQueue } from '@nestjs/bullmq';
 import { Queue } from 'bullmq';
+import { CreateUserDto } from 'src/users/dto/createUser.dto';
 
 @Resolver()
 export class AuthResolver {
@@ -25,7 +26,7 @@ export class AuthResolver {
     private readonly userservice: UsersService,
     private readonly redisservice: RedisService,
     private readonly jwtService: JwtService,
-    @InjectQueue('main-queue') private emailQueue:Queue
+    @InjectQueue('main-queue') private emailQueue: Queue,
   ) {}
 
   @Mutation(() => LoginResponseDto)
@@ -37,13 +38,18 @@ export class AuthResolver {
     const result = await this.authService.login(login, context.res);
     return result;
   }
-
+  @Mutation(() => String)
+  @Public()
+  async signup(@Args('createUserInput') createUserInput: CreateUserDto) {
+    const result = await this.userservice.registerUser(createUserInput);
+    return result.message;
+  }
+  
   @Mutation(() => String)
   sendOtp(@Args('email') email: string, @Args('name') name: string) {
-    this.emailQueue.add('otp-process',{email,name})
+    this.emailQueue.add('otp-process', { email, name });
     // return this.otpservice.requestOtp(email, name);
-    return "otp proccess added to queue"
-
+    return 'otp proccess added to queue';
   }
   @Mutation(() => String)
   async verfication(@Args('otp') otp: resetPasswordDto) {

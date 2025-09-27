@@ -14,6 +14,7 @@ import { ConfigService } from '@nestjs/config';
 import * as dotenv from 'dotenv';
 import { EmailService } from 'src/email/email.service';
 import { ChangePasswordInput } from './dto/changePassword.dto';
+import { CreateUserDto } from 'src/users/dto/createUser.dto';
 dotenv.config();
 @Injectable()
 export class AuthService {
@@ -33,6 +34,17 @@ export class AuthService {
     });
     return token;
   }
+
+    async registerUser(userDto: CreateUserDto) {
+      const user = await this.userService.createUser(userDto);
+      const payload = { sub: user.id, email: user.email };
+      // 3. Send verification email
+      await this.emailService.sendVerificationEmail(user.email);
+  
+      return {
+        message: 'User registered successfully. Please verify your email.',
+      };
+    }
   async login(login: LoginDto, res: Response) {
     const userExist = await this.userService.findUserByEmail(login.email);
     if (!userExist) {

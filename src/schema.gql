@@ -106,9 +106,9 @@ input PaginationInput {
 }
 
 type Mutation {
-  signup(createUserInput: CreateUserDto!): String!
   sendEmail(email: String!, name: String!, otp: String!): String!
   login(login: LoginDto!): LoginResponseDto!
+  signup(createUserInput: CreateUserDto!): String!
   sendOtp(email: String!, name: String!): String!
   verfication(otp: resetPasswordDto!): String!
   logout: String!
@@ -130,6 +130,11 @@ type Mutation {
   writeToFirebase: Boolean!
 }
 
+input LoginDto {
+  email: String!
+  password: String!
+}
+
 input CreateUserDto {
   username: String!
   bio: String!
@@ -137,11 +142,6 @@ input CreateUserDto {
   email: String!
   password: String!
   status: String!
-}
-
-input LoginDto {
-  email: String!
-  password: String!
 }
 
 input resetPasswordDto {

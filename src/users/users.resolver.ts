@@ -13,12 +13,7 @@ export class UsersResolver {
     return 'Hello, GraphQL!';
   }
 
-  @Mutation(() => String)
-  @Public()
-  async signup(@Args('createUserInput') createUserInput: CreateUserDto) {
-    const result = await this.usersService.registerUser(createUserInput);
-    return result.message;
-  }
+
 
   @Query(() => Users)
   findUser(@Args('userId', { type: () => Int }) userid: number) {
